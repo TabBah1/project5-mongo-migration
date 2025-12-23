@@ -1,0 +1,21 @@
+# Ignorer les fichiers système et environnement Python
+__pycache__/
+*.py[cod]
+.venv/
+env/
+.vscode/
+
+# Ignorer les variables d'environnement (Mots de passe)
+.env
+
+# Ignorer les données brutes (Confidentialité médicale !)
+data/*.csv
+!data/.gitkeep
+
+# --- AJOUT CRUCIAL POUR DOCKER ---
+# Ignorer les fichiers binaires de la base de données MongoDB
+data/db/
+data/configdb/
+
+# Ignorer les fichiers de logs
+*.log
