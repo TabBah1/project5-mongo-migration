@@ -31,7 +31,7 @@ L'architecture technique s'appuie sur Python 3.10 pour l'ensemble du traitement 
 Le projet suit une structure modulaire standard qui facilite la maintenance et l'évolution future. À la racine, on trouve un dossier `data/` contenant les datasets bruts et nettoyés, un dossier `scripts/` qui héberge les différentes étapes du pipeline ETL, et un dossier `tests/` dédié aux tests automatisés. Les scripts principaux incluent `read_csv.py` pour la lecture et l'exploration initiale, `clean_data.py` pour le nettoyage et la normalisation des données, et enfin `migrate_to_mongo.py` qui gère la migration proprement dite vers MongoDB avec un schéma imbriqué. Les fichiers de configuration comme le `.env` (pour les secrets), le `docker-compose.yml`, le `Dockerfile` et le `requirements.txt` complètent cette architecture.
 
 - Structure du projet: 
-── data/                   # Datasets bruts et nettoyés
+```── data/                   # Datasets bruts et nettoyés
 ├── scripts/                # Scripts ETL (Extraction, Transformation, Chargement)
 │   ├── read_csv.py         # Lecture et exploration initiale
 │   ├── clean_data.py       # Nettoyage et normalisation
@@ -57,7 +57,7 @@ Concrètement, chaque document de la collection '`patients` est structuré en ci
 Cette modélisation imbriquée permet d'accéder à l'ensemble des informations d'un patient en une seule opération de lecture, ce qui optimise considérablement les performances par rapport à des jointures multiples dans un système relationnel classique.
 
 - Structure du JSON: 
- {
+ ```{
   "_id": ObjectId("..."),
   "patient": {
     "name": "Liam...",
@@ -100,6 +100,13 @@ La fiabilité du pipeline est assurée par une suite de tests unitaires dévelop
 La sécurité a été une préoccupation constante tout au long du développement. La base MongoDB est protégée par une authentification utilisateur, et l'URL de connexion ainsi que les identifiants sont isolés dans un fichier `.env` qui est explicitement exclu du versioning Git via `.gitignore`. Cette pratique évite toute exposition accidentelle de données sensibles dans le dépôt de code.
 
 Le script de migration a été conçu pour être idempotent : il vide systématiquement la collection cible avant chaque nouvelle insertion, ce qui permet de relancer le pipeline autant de fois que nécessaire sans créer de doublons ou d'incohérences. Cette approche facilite grandement les phases de développement et de débogage.
+
+- Gestion des Accès (RBAC)
+Le projet implémente une gestion fine des droits via MongoDB :
+* **Admin** : Accès total à l'infrastructure.
+* **Medical Editor** : Droits de lecture et écriture sur la base.
+* **Medical Viewer** : Lecture seule pour les analyses globales.
+* **Doctor Restricted** : Accès limité via une **Vue Filtrée** (ne voit que son propre hôpital).
 
 ## Déploiement et mise en œuvre
 
