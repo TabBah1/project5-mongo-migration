@@ -148,15 +148,19 @@ pip install -r requirements.txt
 ## 3. Exécuter le pipeline :
 
 python scripts/clean_data.py
+
 python scripts/migrate_to_mongo.py
+
 python scripts/setup_security.py
 
 ## 4. Lancer les tests de validation :
 
   - Pour tester les données (Unittest)
+
 python -m unittest tests/test_mongo_data.py
 
   - Pour tester la sécurité (RBAC)
+  
 python tests/test_access.py
 
 
