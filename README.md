@@ -24,24 +24,32 @@ La migration des données est automatisée à travers un pipeline structuré en 
 
 ## Technologies et outils
 
-L'architecture technique s'appuie sur Python 3.10 pour l'ensemble du traitement des données et l'automatisation du pipeline. La bibliothèque Pandas a été utilisée pour l'exploration initiale et le nettoyage du dataset, tandis que MongoDB 6.0 constitue le cœur de notre solution de stockage NoSQL. La communication entre Python et MongoDB est assurée par PyMongo, le driver officiel. L'infrastructure est entièrement conteneurisée grâce à Docker et Docker Compose, ce qui garantit la reproductibilité de l'environnement. J'ai également utilisé Conda pour la gestion de l'environnement virtuel (nommé project5), et python-dotenv pour une gestion sécurisée des variables d'environnement sensibles.
+L'architecture technique s'appuie sur Python 3.10 pour l'ensemble du traitement des données et l'automatisation du pipeline. La bibliothèque Pandas a été utilisée pour l'exploration initiale et le nettoyage du dataset, tandis que MongoDB 8.2.3 constitue le cœur de notre solution de stockage NoSQL. La communication entre Python et MongoDB est assurée par PyMongo, le driver officiel. L'infrastructure est entièrement conteneurisée grâce à Docker et Docker Compose, ce qui garantit la reproductibilité de l'environnement. J'ai également utilisé Conda pour la gestion de l'environnement virtuel (nommé project5), et python-dotenv pour une gestion sécurisée des variables d'environnement sensibles.
 
 ## Organisation du code et Strucure du projet 
 
 Le projet suit une structure modulaire standard qui facilite la maintenance et l'évolution future. À la racine, on trouve un dossier `data/` contenant les datasets bruts et nettoyés, un dossier `scripts/` qui héberge les différentes étapes du pipeline ETL, et un dossier `tests/` dédié aux tests automatisés. Les scripts principaux incluent `read_csv.py` pour la lecture et l'exploration initiale, `clean_data.py` pour le nettoyage et la normalisation des données, et enfin `migrate_to_mongo.py` qui gère la migration proprement dite vers MongoDB avec un schéma imbriqué. Les fichiers de configuration comme le `.env` (pour les secrets), le `docker-compose.yml`, le `Dockerfile` et le `requirements.txt` complètent cette architecture.
 
 - Structure du projet: 
-```── data/                   # Datasets bruts et nettoyés
-├── scripts/                # Scripts ETL (Extraction, Transformation, Chargement)
-│   ├── read_csv.py         # Lecture et exploration initiale
-│   ├── clean_data.py       # Nettoyage et normalisation
-│   └── migrate_to_mongo.py # Migration avec schéma imbriqué
-├── tests/                  # Tests automatisés d'intégrité
-├── .env                    # Variables d'environnement (Secrets)
-├── .gitignore              # Exclusion des fichiers sensibles
-├── docker-compose.yml      # Orchestration de la base MongoDB
-├── Dockerfile              # Configuration de l'image Docker
-└── requirements.txt        # Dépendances Pythonganisé de manière modulaire
+```PROJECT5-MONGO-MIGRATION/
+├── .vscode/                # Configuration de l'éditeur
+│   └── settings.json
+├── data/                   # Datasets (healthcare_dataset_clean.csv, etc.)
+├── scripts/                # Pipeline ETL et Configuration
+│   ├── clean_data.py       # Nettoyage des données avec Pandas
+│   ├── migrate_to_mongo.py # Transformation et injection NoSQL
+│   ├── read_csv.py         # Exploration initiale du dataset
+│   └── setup_security.py   # Création des rôles et des vues (RBAC)
+├── tests/                  # Validation et Audit de sécurité
+│   ├── test_access.py      # Vérification des droits (Éditeur, Lecteur, Médecin)
+│   └── test_mongo_data.py  # Tests unitaires d'intégrité des documents
+├── .env                    # Secrets (URI, Identifiants) - [IGNORÉ PAR GIT]
+├── .env.example            # Modèle de configuration pour les autres développeurs
+├── .gitignore              # Liste des fichiers à ne pas envoyer sur GitHub
+├── docker-compose.yml      # Orchestration du container MongoDB 8.2.3
+├── Dockerfile              # Personnalisation de l'image MongoDB
+├── README.md               # Documentation complète du projet
+└── requirements.txt        # Liste des bibliothèques (pandas, pymongo, python-dotenv)
 
 
 ## Caractéristiques du dataset
@@ -84,6 +92,7 @@ Cette modélisation imbriquée permet d'accéder à l'ensemble des informations 
     "hospital": "Sons And Miller"
   }
 }
+Grâce au schéma imbriqué et aux index, le système reste ultra-rapide : il accède directement au dossier complet d'un patient sans avoir besoin de fouiller dans toute la base de données.
 
 ## Le pipeline de migration
 
@@ -135,7 +144,11 @@ python scripts/migrate_to_mongo.py
 
 ## 4. Lancer les tests de validation :
 
-python -m unittest discover tests
+  - Pour tester les données (Unittest)
+python -m unittest tests/test_mongo_data.py
+
+  - Pour tester la sécurité (RBAC)
+python tests/test_access.py
 
 
 ## Bilan et perspectives

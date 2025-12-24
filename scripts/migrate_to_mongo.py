@@ -1,44 +1,41 @@
 import pandas as pd
-from pymongo import MongoClient
+import pymongo # Import complet pour éviter l'erreur "not defined"
 import os
 from dotenv import load_dotenv
 
-# 1. Chargement des variables d'environnement (Sécurité)
+# 1. Chargement des variables d'environnement
 load_dotenv()
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://admin:admin123@localhost:27017")
 
-# 2. Connexion MongoDB
+# 2. Connexion MongoDB avec l'utilisateur sécurisé
+# On utilise directement l'URI avec les accès créés manuellement
+uri = "mongodb://medical_editor:editor_password123@localhost:27017/healthcare?authSource=healthcare"
+
 try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    client = pymongo.MongoClient(uri, serverSelectionTimeoutMS=5000)
     db = client["healthcare"]
     collection = db["patients"]
-    # Test de connexion
+    # Test de connexion rapide
     client.admin.command('ping')
-    print(" Connexion MongoDB réussie")
+    print("Connexion MongoDB réussie avec l'utilisateur 'medical_editor'")
 except Exception as e:
-    print(f" Erreur de connexion : {e}")
+    print(f"Erreur de connexion : {e}")
     exit()
 
-# 3. Chargement du CSV nettoyé
-# On utilise os.path pour être sûr de trouver le fichier dans Docker
+# 3. Chargement du CSV
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSV_PATH = os.path.join(BASE_DIR, "data", "healthcare_dataset_clean.csv")
 
 if not os.path.exists(CSV_PATH):
-    print(f" Fichier introuvable : {CSV_PATH}")
+    print(f"Fichier introuvable : {CSV_PATH}")
     exit()
 
 df = pd.read_csv(CSV_PATH)
-
-# Suppressions des boublons
 df = df.drop_duplicates()
-
 print(f"CSV chargé : {len(df)} lignes à migrer.")
 
-# 4. Transformation en Schéma Imbriqué (Le coeur de ta mission)
-print("Transformation des documents en format imbriqué...")
+# 4. Transformation en Schéma Imbriqué
+print("Transformation des documents...")
 documents = []
-
 for _, row in df.iterrows():
     doc = {
         "patient": {
@@ -69,15 +66,18 @@ for _, row in df.iterrows():
     }
     documents.append(doc)
 
-# 5. Insertion (on vide avant pour éviter les doublons de test)
-collection.delete_many({}) 
-print(f" Insertion de {len(documents)} documents...")
-result = collection.insert_many(documents)
-
-# 6. Création des index (sur les nouveaux champs imbriqués)
-collection.create_index("patient.name")
-collection.create_index("medical.condition")
-collection.create_index("admission.date_admission")
-
-print(f" Migration terminée avec succès ({len(result.inserted_ids)} docs).")
-print(" Index créés sur les champs imbriqués.")
+# 5. Insertion
+try:
+    collection.delete_many({}) 
+    print(f"Insertion de {len(documents)} documents...")
+    result = collection.insert_many(documents)
+    
+    # 6. Création des index
+    collection.create_index("patient.name")
+    collection.create_index("medical.condition")
+    collection.create_index("admission.date_admission")
+    
+    print(f"Migration terminée avec succès ({len(result.inserted_ids)} docs).")
+    print("Index créés sur les champs imbriqués.")
+except Exception as e:
+    print(f"Erreur lors de l'insertion : {e}")
