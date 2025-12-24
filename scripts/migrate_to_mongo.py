@@ -6,17 +6,17 @@ from dotenv import load_dotenv
 # 1. Chargement des variables d'environnement
 load_dotenv()
 
-# 2. Connexion MongoDB avec l'utilisateur sécurisé
-# On utilise directement l'URI avec les accès créés manuellement
-uri = "mongodb://medical_editor:editor_password123@localhost:27017/healthcare?authSource=healthcare"
+# 2. Connexion MongoDB
+# On utilise l'URI du fichier .env pour avoir les droits admin durant la migration
+mongo_uri = os.getenv("MONGO_URI")
 
 try:
-    client = pymongo.MongoClient(uri, serverSelectionTimeoutMS=5000)
+    client = pymongo.MongoClient(mongo_uri)
     db = client["healthcare"]
     collection = db["patients"]
-    # Test de connexion rapide
+    # Test de connexion
     client.admin.command('ping')
-    print("Connexion MongoDB réussie avec l'utilisateur 'medical_editor'")
+    print("Connexion MongoDB réussie (Droits Admin)")
 except Exception as e:
     print(f"Erreur de connexion : {e}")
     exit()

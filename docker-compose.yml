@@ -1,21 +1,16 @@
-version: "3.8"
-
 services:
   mongodb:
-    image: mongo:6.0
-    container_name: mongodb_project5
+    image: mongo:latest
+    container_name: mongo_final
     restart: always
     ports:
       - "27017:27017"
-    volumes:
-      # Volume pour la persistance de la base (Pour le projet)
-      - mongo_data:/data/db 
-      # Volume pour que le conteneur accède à tes CSV
-      - ./data:/data 
     environment:
-      # On utilise les variables du fichier .env pour ne pas écrire les mots de passe ici
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-admin123}
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongo_data:/data/db
+      - ./data:/data
 
 volumes:
   mongo_data:

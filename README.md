@@ -133,6 +133,12 @@ Lancer la base de données :
 
 docker-compose up -d
 
+- Configuration des variables d'environnement
+Créez un fichier `.env` à la racine du projet en vous basant sur `.env.example`. 
+Ce fichier doit impérativement contenir l'URI de connexion pour la migration initiale :
+
+`MONGO_URI=mongodb://admin:admin123@localhost:27017/healthcare?authSource=admin`
+
 ## 2. Installer les dépendances :
 
 pip install -r requirements.txt
@@ -141,6 +147,7 @@ pip install -r requirements.txt
 
 python scripts/clean_data.py
 python scripts/migrate_to_mongo.py
+python scripts/setup_security.py
 
 ## 4. Lancer les tests de validation :
 

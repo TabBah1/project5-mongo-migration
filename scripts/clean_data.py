@@ -17,11 +17,11 @@ else:
     df = pd.read_csv(CSV_PATH)
     print(f"Dataset chargé : {len(df)} lignes.")
 
-    # 4. Normalisation des noms de colonnes (Snake Case)
-    # Plus robuste : strip() enlève les espaces cachés au début ou à la fin des titres
+    # 4. Normalisation des noms de colonnes
+    # Ici strip() enlève les espaces cachés au début ou à la fin des titres
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 
-    # 5. Nettoyage automatique des textes (Boucle Pro)
+    # 5. Nettoyage automatique des textes
     # On définit les colonnes qui doivent être propres
     text_cols = ["name", "gender", "blood_type", "medical_condition", "doctor", "hospital", "insurance_provider", "admission_type", "medication", "test_results"]
     
