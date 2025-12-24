@@ -50,7 +50,7 @@ Le projet suit une structure modulaire standard qui facilite la maintenance et l
 ├── Dockerfile              # Personnalisation de l'image MongoDB
 ├── README.md               # Documentation complète du projet
 └── requirements.txt        # Liste des bibliothèques (pandas, pymongo, python-dotenv)
-
+```
 
 ## Caractéristiques du dataset
 
@@ -65,7 +65,8 @@ Concrètement, chaque document de la collection '`patients` est structuré en ci
 Cette modélisation imbriquée permet d'accéder à l'ensemble des informations d'un patient en une seule opération de lecture, ce qui optimise considérablement les performances par rapport à des jointures multiples dans un système relationnel classique.
 
 - Structure du JSON: 
- ```{
+ ```
+ {
   "_id": ObjectId("..."),
   "patient": {
     "name": "Liam...",
@@ -92,6 +93,7 @@ Cette modélisation imbriquée permet d'accéder à l'ensemble des informations 
     "hospital": "Sons And Miller"
   }
 }
+```
 Grâce au schéma imbriqué et aux index, le système reste ultra-rapide : il accède directement au dossier complet d'un patient sans avoir besoin de fouiller dans toute la base de données.
 
 ## Le pipeline de migration
@@ -164,4 +166,4 @@ Ce projet représente une mise en pratique complète des compétences essentiell
 
 Les résultats concrets incluent le traitement et le nettoyage d'un dataset volumineux avec Python et Pandas, la conception d'une architecture documentaire exploitant pleinement les capacités de MongoDB, l'implémentation d'une stratégie d'indexation pour des performances optimales, et la mise en place d'une infrastructure Docker garantissant l'isolation et la persistance des données (211,9 MB de stockage dans des volumes Docker). La qualité du code est assurée par une couverture complète de tests automatisés, tous validés avec succès.
 
-Ce travail constitue une base solide pour des développements futurs, qu'il s'agisse de traitements Big Data plus complexes ou d'une mise en production sur le cloud. Il m'a également permis de me familiariser en profondeur avec les technologies clés du métier de Data Engineer : MongoDB pour le NoSQL, Docker pour la conteneurisation, Python pour l'automatisation, et les services cloud AWS pour la scalabilité.
+Ce travail constitue une base solide pour des développements futurs, qu'il s'agisse de traitements Big Data plus complexes ou d'une mise en production sur le cloud. Il m'a également permis de me familiariser en profondeur avec les technologies clés du métier de Data Engineer : MongoDB pour le NoSQL, Docker pour la conteneurisation, Python pour l'automatisation.
