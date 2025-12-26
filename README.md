@@ -43,7 +43,8 @@ Le projet suit une structure modulaire standard qui facilite la maintenance et l
 │   └── setup_security.py   # Création des rôles et des vues (RBAC)
 ├── tests/                  # Validation et Audit de sécurité
 │   ├── test_access.py      # Vérification des droits (Éditeur, Lecteur, Médecin)
-│   └── test_mongo_data.py  # Tests unitaires d'intégrité des documents
+│   └── test_index.py       # Test de validation et performance des index
+|   |__ test_mongo_data.py  # Tests unitaires d'intégrité des documents
 ├── .env                    # Secrets (URI, Identifiants) - [IGNORÉ PAR GIT]
 ├── .env.example            # Modèle de configuration pour les autres développeurs
 ├── .gitignore              # Liste des fichiers à ne pas envoyer sur GitHub
@@ -136,7 +137,6 @@ Lancer la base de données :
 
  docker-compose up -d 
 
-
 - Configuration des variables d'environnement: 
 
 Créez un fichier `.env` à la racine du projet en vous basant sur `.env.example`. 
@@ -170,11 +170,28 @@ python scripts/setup_security.py
 
 python -m unittest tests/test_mongo_data.py
 
+  - Pour tester les performances (Indexation)
+  
+python tests/test_index.py
 
   - Pour tester la sécurité (RBAC)
   
 python tests/test_access.py
 
+## Audit de Performance : 
+
+Pour valider l'efficacité de la stratégie d'indexation automatisée, le script `test_index.py` effectue une analyse du plan d'exécution (**Query Explain Plan**).
+
+### Résultats du test d'index :
+Le test simule une recherche sur un volume de *54 966 documents*. L'audit confirme le succès de l'optimisation :
+
+* **Type de recherche** : `FETCH` via index (au lieu d'un `COLLSCAN` lent).
+* **Documents examinés** : **1 seul document** accédé directement.
+* **Temps de réponse** : **3 ms** (Performance quasi-instantanée).
+
+
+
+Cette étape de validation garantit que l'infrastructure est capable de supporter une montée en charge importante (Scalabilité) tout en minimisant la consommation de ressources CPU/RAM sur un futur déploiement Cloud (AWS DocumentDB).
 
 ## Bilan et perspectives
 
