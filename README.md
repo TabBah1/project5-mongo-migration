@@ -134,8 +134,8 @@ Prérequis:
 ## 1. Installation
 Lancer la base de données :
 
-``` docker-compose up -d 
-```
+ docker-compose up -d 
+
 
 - Configuration des variables d'environnement: 
 
@@ -146,35 +146,34 @@ Ce fichier doit impérativement contenir l'URI de connexion pour la migration in
 
 ## 2. Installer les dépendances :
 
-```pip install -r requirements.txt 
-```
+pip install -r requirements.txt 
+
 
 ## 3. Exécuter le pipeline :
 
 - Prépare le csv pour MongoDB:
 
-```python scripts/clean_data.py
-```
+python scripts/clean_data.py
+
 - Transforme et injecte les données: 
 
-```python scripts/migrate_to_mongo.py
-```
+python scripts/migrate_to_mongo.py
+
 - Configure les roles RBAC : 
 
-```python scripts/setup_security.py
-```
+python scripts/setup_security.py
+
 
 ## 4. Lancer les tests de validation :
 
   - Pour tester les données (Unittest)
 
-```python -m unittest tests/test_mongo_data.py
-```
+python -m unittest tests/test_mongo_data.py
+
 
   - Pour tester la sécurité (RBAC)
   
-```python tests/test_access.py
-```
+python tests/test_access.py
 
 
 ## Bilan et perspectives
