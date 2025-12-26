@@ -24,13 +24,14 @@ La migration des données est automatisée à travers un pipeline structuré en 
 
 ## Technologies et outils
 
-L'architecture technique s'appuie sur Python 3.10 pour l'ensemble du traitement des données et l'automatisation du pipeline. La bibliothèque Pandas a été utilisée pour l'exploration initiale et le nettoyage du dataset, tandis que MongoDB 8.2.3 constitue le cœur de notre solution de stockage NoSQL. La communication entre Python et MongoDB est assurée par PyMongo, le driver officiel. L'infrastructure est entièrement conteneurisée grâce à Docker et Docker Compose, ce qui garantit la reproductibilité de l'environnement. J'ai également utilisé Conda pour la gestion de l'environnement virtuel (nommé project5), et python-dotenv pour une gestion sécurisée des variables d'environnement sensibles.
+L'architecture technique s'appuie sur Python 3.10 pour l'ensemble du traitement des données et l'automatisation du pipeline. La bibliothèque Pandas a été utilisée pour l'exploration initiale et le nettoyage du dataset, tandis que MongoDB (Image Docker latest) constitue le cœur de notre solution de stockage NoSQL. La communication entre Python et MongoDB est assurée par PyMongo, le driver officiel. L'infrastructure est entièrement conteneurisée grâce à Docker et Docker Compose, ce qui garantit la reproductibilité de l'environnement. J'ai également utilisé Conda pour la gestion de l'environnement virtuel (nommé project5), et python-dotenv pour une gestion sécurisée des variables d'environnement sensibles.
 
-## Organisation du code et Strucure du projet 
+## Organisation du code et Structure du projet 
 
 Le projet suit une structure modulaire standard qui facilite la maintenance et l'évolution future. À la racine, on trouve un dossier `data/` contenant les datasets bruts et nettoyés, un dossier `scripts/` qui héberge les différentes étapes du pipeline ETL, et un dossier `tests/` dédié aux tests automatisés. Les scripts principaux incluent `read_csv.py` pour la lecture et l'exploration initiale, `clean_data.py` pour le nettoyage et la normalisation des données, et enfin `migrate_to_mongo.py` qui gère la migration proprement dite vers MongoDB avec un schéma imbriqué. Les fichiers de configuration comme le `.env` (pour les secrets), le `docker-compose.yml`, le `Dockerfile` et le `requirements.txt` complètent cette architecture.
 
 - Structure du projet: 
+
 ```PROJECT5-MONGO-MIGRATION/
 ├── .vscode/                # Configuration de l'éditeur
 │   └── settings.json
@@ -133,9 +134,11 @@ Prérequis:
 ## 1. Installation
 Lancer la base de données :
 
-docker-compose up -d
+``` docker-compose up -d 
+```
 
-- Configuration des variables d'environnement
+- Configuration des variables d'environnement: 
+
 Créez un fichier `.env` à la racine du projet en vous basant sur `.env.example`. 
 Ce fichier doit impérativement contenir l'URI de connexion pour la migration initiale :
 
@@ -143,31 +146,41 @@ Ce fichier doit impérativement contenir l'URI de connexion pour la migration in
 
 ## 2. Installer les dépendances :
 
-pip install -r requirements.txt
+```pip install -r requirements.txt 
+```
 
 ## 3. Exécuter le pipeline :
 
-python scripts/clean_data.py
+- Prépare le csv pour MongoDB:
 
-python scripts/migrate_to_mongo.py
+```python scripts/clean_data.py
+```
+- Transforme et injecte les données: 
 
-python scripts/setup_security.py
+```python scripts/migrate_to_mongo.py
+```
+- Configure les roles RBAC : 
+
+```python scripts/setup_security.py
+```
 
 ## 4. Lancer les tests de validation :
 
   - Pour tester les données (Unittest)
 
-python -m unittest tests/test_mongo_data.py
+```python -m unittest tests/test_mongo_data.py
+```
 
   - Pour tester la sécurité (RBAC)
   
-python tests/test_access.py
+```python tests/test_access.py
+```
 
 
 ## Bilan et perspectives
 
-Ce projet représente une mise en pratique complète des compétences essentielles d'un Data Engineer moderne. J'ai pu démontrer ma capacité à traiter un volume significatif de données (près de 55 000 documents), à concevoir une modélisation NoSQL optimisée, et à sécuriser une infrastructure conteneurisée de bout en bout.
+Ce projet représente une mise en pratique complète des compétences essentielles d'un Data Engineer . J'ai pu démontrer ma capacité à traiter un volume significatif de données (près de 55 000 documents), à concevoir une modélisation NoSQL optimisée, et à sécuriser une infrastructure conteneurisée de bout en bout.
 
 Les résultats concrets incluent le traitement et le nettoyage d'un dataset volumineux avec Python et Pandas, la conception d'une architecture documentaire exploitant pleinement les capacités de MongoDB, l'implémentation d'une stratégie d'indexation pour des performances optimales, et la mise en place d'une infrastructure Docker garantissant l'isolation et la persistance des données (211,9 MB de stockage dans des volumes Docker). La qualité du code est assurée par une couverture complète de tests automatisés, tous validés avec succès.
 
-Ce travail constitue une base solide pour des développements futurs, qu'il s'agisse de traitements Big Data plus complexes ou d'une mise en production sur le cloud. Il m'a également permis de me familiariser en profondeur avec les technologies clés du métier de Data Engineer : MongoDB pour le NoSQL, Docker pour la conteneurisation, Python pour l'automatisation.
+Ce travail constitue une base solide pour des développements futurs, qu'il s'agisse de traitements Big Data plus complexes ou d'une mise en production sur le cloud. Il m'a également permis de me familiariser en profondeur avec les technologies clés du métier de Data Engineer : MongoDB pour le NoSQL, Docker pour la conteneurisation, Python pour l'automatisation et Git/ GitHub pour le versionnage.
